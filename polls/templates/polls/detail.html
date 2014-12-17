@@ -1,0 +1,40 @@
+<!-- 
+    Because the question variable we throw into the template is a database object,  
+    therefore, we can use Django database API here to get related data or use the methods
+-->
+<h1>{{ question.question_text }}</h1>
+
+{% if error_message %} 
+    <p style = 'color: red'><strong> {{ error_message }} </strong></p>    
+    {# If error_message is passed into the template, then show this #}
+    {# This implies that if we do not have to pass all mentioned variables into the template #}
+    {# It also means that variables are actually defined in views.py, not in templates #}
+    {# but the name of the variable has to be the same between the two #}
+{% endif %}
+
+<form action="{% url 'polls:vote' question.id %}" method="post">
+
+    {% csrf_token %} {# this is a pre-defined django template tag #}
+    {% for choice in question.choice_set.all %}
+        <input 
+            type = 'radio' 
+            name = 'choice' 
+            id = 'choice{{ forloop.counter }}' 
+            value = "{{ choice.id }}"
+        >
+        <label for = 'choice{{ forloop.counter }}'>{{ choice.choice_text }}</label>
+
+        <br>
+    {% endfor %}
+
+    <input type = 'submit' value = 'Vote'>
+</form>
+
+<form action = "{% url 'polls:new_choice' %}" method = "post">
+    {% csrf_token %}
+    <input name = 'choice_text' type = 'text'>
+    <input type = 'hidden' name = 'question_id' value = '{{ question.id }}'>
+    <input type = 'submit' value = 'Add Option'>
+</form>
+
+
