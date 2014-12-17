@@ -11,8 +11,15 @@ class Question(models.Model): #create a class that inherits from the models clas
 	def __unicode__(self):
 		return self.question_text
 
+
 	def was_published_recently(self):
 		return self.pub_date >= timezone.now() - datetime.timedelta(days = 1)
+
+	was_published_recently.admin_order_field = 'pub_date' 
+	was_published_recently.boolean = True #replace boolean text value in admin page with check and cross icons
+	was_published_recently.short_description = "Published Recently?" #assign a short description as the resultant column's header in the admin page.
+	#this makes non-database field generated in the admin interface can be sorted using a specific database field
+
 
 class Choice(models.Model):
 	question = models.ForeignKey(Question)

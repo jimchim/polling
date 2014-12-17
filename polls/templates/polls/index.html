@@ -1,0 +1,19 @@
+{% if question_list %}
+    <ul>
+        {% for question in question_list %}
+            <li><a href="{% url 'polls:detail' question.id %}">{{ question.question_text }}</a></li>
+            {# the href above generates a link using the url function declared in polls/urls.py #}
+            {# polls:detail is a namespaced view target #}
+        {% endfor %}        
+    </ul>
+
+{% else %}
+    <p>No polls are available</p>
+{% endif %} 
+
+<form action = "{% url 'polls:new_question'%}" method = 'post'>
+    {% csrf_token %}
+    <input style = 'width: 50%; padding: 0.3em; margin-bottom: 1em;' type = 'text' name = 'question_text' placeholder = 'Enter new poll question here'>
+    <br>
+    <input type = 'submit' value = 'Add'>
+</form>
