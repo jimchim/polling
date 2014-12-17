@@ -18,12 +18,23 @@ class IndexView(generic.ListView):
     #which will in turn be used to render the page with the template
     #so instead of added a model attribute to this class, the ListView class uses the get_quertset method
     #to get a list of objects to be work with.
-        """Return the last five published questions."""
-        return Question.objects.order_by('-pub_date')[:5]
+        """Return the last five published questions - 
+        questions that are scheduled to be published in the future will not be handled
+        """
+        #return Question.objects.order_by('-pub_date')[:5]
+        return Question.objects.filter(
+            pub_date__lte = timezone.now()
+        ).order_by('-pub_date')[:5]
 
 class DetailView(generic.DetailView):
     model = Question
     template_name = 'polls/detail.html'
+
+    def get_queryset(self):
+        """
+        Exclude any question that aren't published yet.
+        """
+        return Question.objects.filter(pub_date__lte = timezone.now())
 
 class ResultsView(generic.DetailView):
     model = Question
